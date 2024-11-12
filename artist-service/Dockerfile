@@ -10,5 +10,5 @@ COPY target/artist-service.jar app.jar
 # Definisce il comando da eseguire quando il container viene avviato
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
-# Espone la porta 8081 (o quella che utilizza il tuo servizio)
+# Espone la porta 8081
 EXPOSE 8081
