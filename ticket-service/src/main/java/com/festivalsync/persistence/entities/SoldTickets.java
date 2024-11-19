@@ -1,4 +1,4 @@
-package com.festivalsync.persistence.entity;
+package com.festivalsync.persistence.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;

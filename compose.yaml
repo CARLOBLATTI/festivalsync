@@ -85,7 +85,16 @@ services:
       - db_network
     depends_on:
       - kafka
-
+  gateway:
+    build: ./gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - db_network
+    depends_on:
+      - artist-service
+      - event-service
+      - ticket-service
 volumes:
   mariadb_data:
 

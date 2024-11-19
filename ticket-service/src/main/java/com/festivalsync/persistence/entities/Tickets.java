@@ -1,4 +1,4 @@
-package com.festivalsync.persistence.entity;
+package com.festivalsync.persistence.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,19 +8,22 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "artists")
-public class Artists {
+@Table(name = "tickets")
+public class Tickets {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    /*
+    @ManyToOne
+    @JoinColumn(name = "event_id")
+    private Event event;
 
-    private String genre;
+     */
 
-    private String country;
+    private Double price;
 
-    private String location;
+    private Integer availability;
 
     private String state;
 

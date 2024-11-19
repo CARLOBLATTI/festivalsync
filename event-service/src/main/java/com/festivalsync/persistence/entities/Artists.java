@@ -1,4 +1,4 @@
-package com.festivalsync.persistence.entity;
+package com.festivalsync.persistence.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,27 +10,19 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "events")
-public class Events {
+@Table(name = "artists")
+public class Artists {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    private LocalDate date;
-
-    private String location;
+    private String genre;
 
     private String country;
 
-    @ManyToMany
-    @JoinTable(
-            name = "event_artists",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
-    private List<Artists> artists = new ArrayList<>();
+    private String location;
 
     private String state;
 
@@ -42,5 +34,9 @@ public class Events {
 
     @Column(name = "update_timestamp")
     private LocalDateTime updateTimestamp;
+
+    @ManyToMany(mappedBy = "artists")
+    private List<Events> events = new ArrayList<>();
+
 }
 
