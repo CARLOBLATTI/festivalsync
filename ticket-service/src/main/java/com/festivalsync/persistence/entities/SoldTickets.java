@@ -14,12 +14,9 @@ public class SoldTickets {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*
     @ManyToOne
     @JoinColumn(name = "ticket_id")
     private Tickets ticket;
-
-     */
 
     @Column(name = "buyer_name")
     private String buyerName;

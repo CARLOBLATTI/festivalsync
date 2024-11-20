@@ -15,7 +15,4 @@ public interface TicketsRepository extends JpaRepository<Tickets, Long> {
     // Ottenere un biglietto per ID
     Tickets findById(long id);
 
-    // Ottenere tutti i biglietti di un evento
-    @Query("SELECT t FROM Ticket t WHERE t.event.id = :eventId")
-    List<Tickets> findTicketsByEventId(long eventId);
 }

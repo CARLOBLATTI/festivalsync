@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -15,6 +17,14 @@ public class Artists {
     private Long id;
 
     private String name;
+
+    @ManyToMany
+    @JoinTable(
+            name = "artist_event",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
+    private List<Events> events = new ArrayList<>();
 
     private String genre;
 

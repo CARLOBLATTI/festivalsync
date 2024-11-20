@@ -16,7 +16,7 @@ public interface ArtistsRepository extends JpaRepository<Artists, Long> {
     Artists findById(long id);
 
     // Ottenere tutti gli artisti associati a un evento
-    @Query("SELECT a FROM Artist a JOIN a.events e WHERE e.id = :eventId")
-    List<Artists> findArtistsByEventId(long eventId);
+    /*@Query("SELECT a FROM Artist a JOIN a.events e WHERE e.id = :eventId")
+    List<Artists> findArtistsByEventId(long eventId);*/
 }
 

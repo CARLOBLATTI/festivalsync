@@ -15,8 +15,5 @@ public interface EventsRepository extends JpaRepository<Events, Long> {
     // Ottenere un evento per ID
     Events findById(long id);
 
-    // Ottenere tutti gli eventi associati a un artista
-    @Query("SELECT e FROM Event e JOIN e.artists a WHERE a.id = :artistId")
-    List<Events> findEventsByArtistId(long artistId);
 }
 

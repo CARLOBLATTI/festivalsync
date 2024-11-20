@@ -3,6 +3,7 @@ package com.festivalsync.persistence.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -14,14 +15,9 @@ public class Tickets {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*
-    @ManyToOne
-    @JoinColumn(name = "event_id")
-    private Event event;
+    private Long eventId;
 
-     */
-
-    private Double price;
+    private BigDecimal price;
 
     private Integer availability;
 

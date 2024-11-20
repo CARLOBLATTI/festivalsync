@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: festivalsync
+data:
+  SPRING_PROFILES_ACTIVE: "local"
+  API_URL: "http://localhost/festivalsync"
