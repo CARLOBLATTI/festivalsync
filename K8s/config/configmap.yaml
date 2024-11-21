@@ -4,5 +4,5 @@ metadata:
   name: app-config
   namespace: festivalsync
 data:
-  SPRING_PROFILES_ACTIVE: "local"
-  API_URL: "http://localhost/festivalsync"
+  SPRING_PROFILES_ACTIVE: "kubernetes"
+  API_URL: "http://api.festivalsync"

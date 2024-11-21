@@ -39,8 +39,6 @@ services:
     depends_on:
       - zookeeper
 
-
-
   # Micro-servizio artist-service
   artist-service:
     image: artist-service:latest
