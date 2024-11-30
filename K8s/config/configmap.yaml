@@ -5,4 +5,4 @@ metadata:
   namespace: festivalsync
 data:
   SPRING_PROFILES_ACTIVE: "kubernetes"
-  API_URL: "http://api.festivalsync"
+  API_URL: "http://unict.festivalsync.it"

@@ -21,9 +21,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8082
-          env: # Variabili d'ambiente specificate qui
-            - name: SPRING_PROFILES_ACTIVE
-              value: kubernetes
+          env: # Variabili d'ambiente specificate quiminikube ip
             - name: SPRING_DATASOURCE_URL
               value: jdbc:mariadb://mariadb-service:3306/festivalsyncDB
             - name: SPRING_DATASOURCE_USERNAME
