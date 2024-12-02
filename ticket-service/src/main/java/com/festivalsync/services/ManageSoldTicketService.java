@@ -52,6 +52,6 @@ public class ManageSoldTicketService {
 
     @Transactional(readOnly = true)
     public List<SoldTickets> findSoldTicketByTicketId(Long ticketId) {
-        return soldTicketsRepository.findSoldTicketsByTicketId(ticketId);
+        return soldTicketsRepository.findByTicketId(ticketId);
     }
 }

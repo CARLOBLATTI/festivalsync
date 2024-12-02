@@ -23,7 +23,10 @@ public interface SoldTicketsRepository extends JpaRepository<SoldTickets, Long> 
     */
 
     // Ottenere tutti i biglietti venduti di un certo tipo
-    @Query("SELECT st FROM SoldTicket st WHERE st.ticket.id = :ticketId")
-    List<SoldTickets> findSoldTicketsByTicketId(@Param("ticketId") long ticketId);
+    /*@Query("SELECT st FROM SoldTicket st WHERE st.ticket_id = :ticketId")
+    List<SoldTickets> findAllSoldTicketsByTicket(@Param("ticketId") long ticketId);*/
+
+    @Query("SELECT st FROM SoldTickets st WHERE st.ticket.id = :ticketId")
+    List<SoldTickets> findByTicketId(@Param("ticketId") Long ticketId);
 
 }

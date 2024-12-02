@@ -99,7 +99,7 @@ public class KafkaConsumerService {
         }
     }
 
-    @KafkaListener(topics = "${kafka.topic.delete-artist}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${kafka.topic.artist-deleted}", groupId = "${spring.kafka.consumer.group-id}")
     @Transactional(rollbackFor = Exception.class)
     public void consumeDeleteArtistMessage(String message) {
         try {

@@ -36,7 +36,7 @@ public class KafkaConsumerService {
     private final Random random = new Random();
 
 
-    @KafkaListener(topics = "${kafka.topic.event-added}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${kafka.topic.event}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeEventAddedMessage(String message) {
         try {
             // Parsing del messaggio JSON
