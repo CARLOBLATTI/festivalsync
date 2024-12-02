@@ -1,34 +1,122 @@
 package com.festivalsync.controllers;
 
+import com.festivalsync.models.ArtistModel;
+import com.festivalsync.models.kafkaMessage.ArtistEventMessage;
+import com.festivalsync.models.request.AddArtistRequest;
+import com.festivalsync.models.response.AddArtistResponse;
+import com.festivalsync.models.response.GetArtistEventsResponse;
+import com.festivalsync.persistence.entities.Artists;
 import com.festivalsync.services.KafkaProducerService;
+import com.festivalsync.services.ManageArtistService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/artist-service")
+@Tag(name = "Artist Controller", description = "API for managing artists")
 public class ArtistController {
 
     @Value("${kafka.topic.artist}")
     String addArtistTopic;
 
+    @Value("${kafka.topic.artist-deleted}")
+    String deleteArtistTopic;
+
     @Autowired
     KafkaProducerService kafkaProducerService;
 
-    @Operation(summary = "An artist adds his presence")
+    @Autowired
+    ManageArtistService manageArtistService;
+
+    @Operation(summary = "Aggiungi un nuovo artista e invia un messaggio Kafka")
     @PostMapping("/add-artist")
-    public String addArtist(){
-        String response = "ok";
-        try {
-            String test = "artist added";
-            kafkaProducerService.sendMessage(addArtistTopic, test);
-        }
-        catch(Exception e){
-            response = "error";
-        }
-        return response;
+    public ResponseEntity<AddArtistResponse> addArtist(@Valid @RequestBody AddArtistRequest request) {
+        // Crea e salva l'artista
+        Artists artist = new Artists();
+        artist.setName(request.getName());
+        artist.setGenre(request.getGenre());
+        artist.setCountry(request.getCountry());
+        artist.setLocation(request.getLocation());
+        artist.setCreationDate(LocalDate.now());
+        artist.setInsertTimestamp(LocalDateTime.now());
+        artist.setUpdateTimestamp(LocalDateTime.now());
+        artist = manageArtistService.saveAndFlushArtist(artist);
+
+        // Crea il messaggio Kafka
+        ArtistEventMessage kafkaMessage = new ArtistEventMessage();
+        kafkaMessage.setArtistId(artist.getId());
+        kafkaMessage.setDesiredEventCity(request.getDesiredEventCity());
+        kafkaMessage.setDesiredEventDate(request.getDesiredEventDate().toString());
+
+        // Invia il messaggio Kafka
+        kafkaProducerService.sendMessage(addArtistTopic, kafkaMessage);
+
+        // Prepara la risposta
+        AddArtistResponse response = new AddArtistResponse();
+        response.setId(artist.getId());
+        response.setMessage("Artista aggiunto con successo");
+
+        return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/all-artist")
+    @Operation(summary = "Recupera un tutti gli artisti registrati")
+    public ResponseEntity<List<ArtistModel>> getArtistById(@PathVariable Long id) {
+        List<Artists> artists = manageArtistService.findAllArtists();
+        List<ArtistModel> artistsModel = artists.stream().map(manageArtistService::convertArtistToModel)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(artistsModel);
+    }
+
+    @Operation(summary = "Ottieni tutti gli eventi associati a un artista")
+    @GetMapping("/get-artist-events/{id}")
+    public ResponseEntity<GetArtistEventsResponse> getArtistEvents(@PathVariable Long id) {
+        // Recupera l'artista dal database
+        Artists artist = manageArtistService.findArtistById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Artista non trovato con ID " + id));
+        ArtistModel artistModel = manageArtistService.findArtistById(id)
+                .map(manageArtistService::convertArtistToModel)
+                .orElseThrow(() -> new ResourceNotFoundException("Artista non trovato"));
+
+        // Mappa gli eventi associati
+        GetArtistEventsResponse response = new GetArtistEventsResponse();
+        response.setArtistModel(artistModel);
+        response.setEvents(artist.getEvents().stream()
+                .map(manageArtistService::convertEventToModel)
+                .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Elimina un artista")
+    @DeleteMapping("/delete-artist/{id}")
+    public ResponseEntity<String> deleteArtist(@PathVariable Long id) {
+        // Recupera l'artista
+        Artists artist = manageArtistService.findArtistById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Artista non trovato con ID " + id));
+
+        // Cancella l'artista dal database
+        manageArtistService.deleteArtistById(id);
+
+        // Crea il messaggio Kafka
+        ArtistEventMessage kafkaMessage = new ArtistEventMessage();
+        kafkaMessage.setArtistId(artist.getId());
+        kafkaProducerService.sendMessage(deleteArtistTopic, kafkaMessage);
+
+        String responseMessage = "Artista eliminato con successo";
+
+        return ResponseEntity.ok(responseMessage);
+    }
+
 }

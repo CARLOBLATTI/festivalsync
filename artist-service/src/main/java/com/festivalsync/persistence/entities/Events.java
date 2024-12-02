@@ -34,6 +34,9 @@ public class Events {
 
     private String state;
 
+    @Column(name = "arists_number")
+    private int artistsNumber;
+
     @Column(name = "creation_date")
     private LocalDate creationDate;
 
