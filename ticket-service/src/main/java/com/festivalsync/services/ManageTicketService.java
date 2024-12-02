@@ -26,6 +26,11 @@ public class ManageTicketService {
     }
 
     @Transactional(readOnly = true)
+    public Tickets findTicketByEventId(Long id) {
+        return ticketsRepository.findByEventId(id);
+    }
+
+    @Transactional(readOnly = true)
     public List<Tickets> findAllTickets() {
         return ticketsRepository.findAll();
     }

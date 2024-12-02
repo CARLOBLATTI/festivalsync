@@ -41,4 +41,3 @@ public class SoldTickets {
     @Column(name = "update_timestamp")
     private LocalDateTime updateTimestamp;
 }
-

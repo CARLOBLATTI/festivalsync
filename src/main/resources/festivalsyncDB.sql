@@ -18,6 +18,7 @@ CREATE TABLE events (
     country VARCHAR(100), -- Paese dell'evento
     artist_id BIGINT, -- Cambiato a BIGINT
     state VARCHAR(50) DEFAULT 'scheduled', -- Stato dell'evento
+    artists_number INT,
     creation_date DATE NOT NULL, -- Data di creazione
     insert_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp di inserimento
     update_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Timestamp di aggiornamento

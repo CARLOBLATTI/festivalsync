@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -62,6 +63,7 @@ public class KafkaConsumerService {
                 if (!existingEvent.getArtists().contains(artist)) {
                     existingEvent.getArtists().add(artist);
                     existingEvent.setArtistsNumber(existingEvent.getArtistsNumber() + 1);
+                    existingEvent.setUpdateTimestamp(LocalDateTime.now());
                     eventsRepository.save(existingEvent);
                     System.out.println("Artista aggiunto all'evento esistente con ID " + existingEvent.getId());
                 } else {
@@ -124,6 +126,7 @@ public class KafkaConsumerService {
                     kafkaProducerService.sendMessage(eventDeletedTopic, eventDeletedMessage);
                     System.out.println("Evento eliminato con ID " + event.getId() + " e messaggio inviato al topic " + eventDeletedTopic);
                 } else {
+                    event.setUpdateTimestamp(LocalDateTime.now());
                     // Salva l'evento aggiornato
                     eventsRepository.save(event);
                 }
