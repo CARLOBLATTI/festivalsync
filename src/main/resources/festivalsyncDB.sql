@@ -34,7 +34,6 @@ CREATE TABLE tickets (
     creation_date DATE NOT NULL, -- Data di creazione
     insert_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp di inserimento
     update_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Timestamp di aggiornamento
-    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 );
 
 CREATE TABLE sold_tickets (

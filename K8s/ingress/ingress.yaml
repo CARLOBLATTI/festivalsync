@@ -18,14 +18,14 @@ spec:
                 name: artist-service
                 port:
                   number: 8081
-          - path: /events
+          - path: /events(/|$)(.*)
             pathType: Prefix
             backend:
               service:
                 name: event-service
                 port:
                   number: 8082
-          - path: /tickets
+          - path: /tickets(/|$)(.*)
             pathType: Prefix
             backend:
               service:
