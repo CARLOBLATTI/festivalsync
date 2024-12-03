@@ -35,7 +35,7 @@ public class EventController {
 
     @GetMapping("/all-artist")
     @Operation(summary = "Recupera un tutti gli eventi creati")
-    public ResponseEntity<List<EventModel>> getArtistById(@PathVariable Long id) {
+    public ResponseEntity<List<EventModel>> getArtistById() {
         List<Events> events = manageEventService.findAllEvents();
         List<EventModel> eventsModels = events.stream().map(manageEventService::convertEventToModel)
                 .collect(Collectors.toList());

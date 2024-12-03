@@ -42,6 +42,17 @@ public class ManageArtistService {
     }
 
     /**
+     * Recupera un artista tramite il suo ID.
+     *
+     * @param name Il nome dell'artista
+     * @return Un Optional contenente l'artista, se trovato
+     */
+    @Transactional(readOnly = true)
+    public List<Artists> findArtistRegistrationsByName(String name) {
+        return artistsRepository.findByName(name);
+    }
+
+    /**
      * Recupera tutti gli artisti nel database.
      *
      * @return Una lista di tutti gli artisti
@@ -94,6 +105,14 @@ public class ManageArtistService {
         model.setId(artist.getId());
         model.setName(artist.getName());
         model.setGenre(artist.getGenre());
+        if (artist.getEvents() != null) {
+            model.setEvents(convertEventToModel(artist.getEvents()));
+        }
+        /*if (artist.getEvents() != null) {
+            model.setEvents(artist.getEvents().stream()
+                    .map(this::convertEventToModel)
+                    .toList());
+        }*/
         model.setCountry(artist.getCountry());
         model.setLocation(artist.getLocation());
         model.setState(artist.getState());
@@ -109,6 +128,14 @@ public class ManageArtistService {
         artist.setCountry(model.getCountry());
         artist.setLocation(model.getLocation());
         artist.setState(model.getState());
+        /*if (model.getEvents() != null) {
+            artist.setEvents(model.getEvents().stream()
+                    .map(this::convertEventToEntity)
+                    .toList());
+        }*/
+        if (model.getEvents() != null) {
+            artist.setEvents(convertEventToEntity(model.getEvents()));
+        }
         artist.setCreationDate(model.getCreationDate());
         return artist;
     }
@@ -124,16 +151,10 @@ public class ManageArtistService {
         model.setArtistsNumber(event.getArtistsNumber());
         model.setCreationDate(event.getCreationDate());
 
-        // Converti la lista di artisti in ArtistModel
-        if (event.getArtists() != null) {
-            model.setArtists(event.getArtists().stream()
-                    .map(this::convertArtistToModel)
-                    .toList());
-        }
         return model;
     }
 
-    /*public Events convertEventToEntity(EventModel model) {
+    public Events convertEventToEntity(EventModel model) {
         Events event = new Events();
         event.setId(model.getId());
         event.setName(model.getName());
@@ -143,13 +164,7 @@ public class ManageArtistService {
         event.setState(model.getState());
         event.setCreationDate(model.getCreationDate());
 
-        // Converti la lista di artisti in Artists
-        if (model.getArtists() != null) {
-            event.setArtists(model.getArtists().stream()
-                    .map(this::convertArtistModelToEntity)
-                    .toList());
-        }
         return event;
-    }*/
+    }
 
 }

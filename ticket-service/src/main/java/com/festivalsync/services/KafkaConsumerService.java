@@ -1,7 +1,7 @@
 package com.festivalsync.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.festivalsync.kafkaMessage.EventMessage;
+import com.festivalsync.models.kafkaMessage.EventMessage;
 import com.festivalsync.persistence.entities.SoldTickets;
 import com.festivalsync.persistence.entities.Tickets;
 import org.springframework.beans.factory.annotation.Autowired;

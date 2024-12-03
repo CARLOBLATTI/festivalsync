@@ -34,7 +34,12 @@ public class ManageEventService {
     }
 
     @Transactional(readOnly = true)
-    public Events findEventBylocationAndDate(String location, LocalDate eventDate) {
+    public Events getEventById(Long id) {
+        return eventsRepository.findEventsById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Events findEventByLocationAndDate(String location, LocalDate eventDate) {
         return eventsRepository.findByLocationAndDate(location, eventDate);
     }
 
@@ -62,6 +67,11 @@ public class ManageEventService {
             throw new IllegalArgumentException("Event with ID " + id + " does not exist");
         }
         eventsRepository.deleteById(id);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteEvent(Events event) {
+        eventsRepository.delete(event);
     }
 
     /**
@@ -130,8 +140,6 @@ public class ManageEventService {
         model.setLocation(artist.getLocation());
         model.setState(artist.getState());
         model.setCreationDate(artist.getCreationDate());
-        model.setInsertTimestamp(artist.getInsertTimestamp());
-        model.setUpdateTimestamp(artist.getUpdateTimestamp());
         return model;
     }
 
@@ -144,8 +152,6 @@ public class ManageEventService {
         artist.setLocation(model.getLocation());
         artist.setState(model.getState());
         artist.setCreationDate(model.getCreationDate());
-        artist.setInsertTimestamp(model.getInsertTimestamp());
-        artist.setUpdateTimestamp(model.getUpdateTimestamp());
         return artist;
     }
 

@@ -1,4 +1,4 @@
-package com.festivalsync.kafkaMessage;
+package com.festivalsync.models.kafkaMessage;
 
 import lombok.Data;
 
@@ -7,5 +7,9 @@ public class ArtistEventMessage {
     private Long artistId;
     private String desiredEventCity;
     private String desiredEventDate;
+
+    // Costruttore vuoto necessario per la deserializzazione
+    public ArtistEventMessage() {
+    }
 }
 

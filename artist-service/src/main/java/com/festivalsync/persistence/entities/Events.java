@@ -24,7 +24,7 @@ public class Events {
 
     private String country;
 
-    @ManyToMany
+    @OneToMany
     @JoinTable(
             name = "artist_event",
             joinColumns = @JoinColumn(name = "event_id"),

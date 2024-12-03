@@ -36,7 +36,7 @@ public class TicketController {
     }
 
     @Operation(summary = "Compra uno o più ticket")
-    @PostMapping("/tickets/purchase")
+    @PostMapping("/purchase")
     public ResponseEntity<String> purchaseTicket(@RequestBody PurchaseTicketRequest request) {
         Tickets ticket = manageTicketService.findTicketById(request.getTicketId())
                 .orElseThrow(() -> new IllegalArgumentException("Ticket non trovato con ID " + request.getTicketId()));
@@ -73,7 +73,7 @@ public class TicketController {
     }
 
     @Operation(summary = "Richiedi il rimborso di un ticket")
-    @PutMapping("/tickets/refund")
+    @PutMapping("/refund")
     public ResponseEntity<String> refundTicket(@RequestBody RefundTicketRequest request) {
         SoldTickets soldTicket = manageSoldTicketService.findSoldTicketById(request.getSoldTicketId())
                 .orElseThrow(() -> new IllegalArgumentException("SoldTicket non trovato con ID " + request.getSoldTicketId()));

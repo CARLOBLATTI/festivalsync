@@ -5,9 +5,11 @@ CREATE TABLE artists (
     country VARCHAR(100),
     location VARCHAR(100), -- Città
     state VARCHAR(50) DEFAULT 'active', -- Stato
+    event_id BIGINT,
     creation_date DATE NOT NULL, -- Data di creazione
     insert_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp di inserimento
-    update_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Timestamp di aggiornamento
+    update_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Timestamp di aggiornamento
+    FOREIGN KEY (event_id) REFERENCES events(id)
 );
 
 CREATE TABLE events (
@@ -16,13 +18,11 @@ CREATE TABLE events (
     date DATE NOT NULL,
     location VARCHAR(255),
     country VARCHAR(100), -- Paese dell'evento
-    artist_id BIGINT, -- Cambiato a BIGINT
     state VARCHAR(50) DEFAULT 'scheduled', -- Stato dell'evento
     artists_number INT,
     creation_date DATE NOT NULL, -- Data di creazione
     insert_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp di inserimento
     update_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Timestamp di aggiornamento
-    FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE
 );
 
 CREATE TABLE artist_event (

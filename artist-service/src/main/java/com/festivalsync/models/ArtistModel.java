@@ -20,8 +20,8 @@ public class ArtistModel {
     @NotBlank(message = "Il nome dell'artista è obbligatorio")
     private String name;
 
-    @Schema(description = "Lista degli eventi a cui partecipa l'artista")
-    private List<EventModel> events;
+    @Schema(description = "Evento a cui l'artista si è registrato")
+    private EventModel events;
 
     @Schema(description = "Genere musicale dell'artista", example = "Rock")
     private String genre;

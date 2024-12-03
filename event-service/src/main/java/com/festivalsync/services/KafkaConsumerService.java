@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class KafkaConsumerService {
@@ -53,7 +54,7 @@ public class KafkaConsumerService {
                     .orElseThrow(() -> new IllegalArgumentException("Artista non trovato con ID " + artistMessage.getArtistId()));
 
             // Cerca un evento esistente nella stessa città e data
-            Events existingEvent = manageEventService.findEventBylocationAndDate(
+            Events existingEvent = manageEventService.findEventByLocationAndDate(
                     artistMessage.getDesiredEventCity(),
                     LocalDate.parse(artistMessage.getDesiredEventDate())
             );
@@ -79,6 +80,8 @@ public class KafkaConsumerService {
                 newEvent.setState("scheduled");
                 newEvent.setArtistsNumber(1);
                 newEvent.setCreationDate(LocalDate.now());
+                newEvent.setInsertTimestamp(LocalDateTime.now());
+                newEvent.setUpdateTimestamp(LocalDateTime.now());
                 newEvent.getArtists().add(artist);
 
                 // Salva il nuovo evento
@@ -109,16 +112,15 @@ public class KafkaConsumerService {
 
             Long artistId = artistDeletedMessage.getArtistId();
 
-            // Recupera tutti gli eventi associati all'artista usando l'ID
-            List<Events> events = manageEventService.findAllByArtistId(artistId);
-
-            for (Events event : events) {
+            for (Long eventId : artistDeletedMessage.getEventsId()) {
                 // Rimuovi l'artista dalla relazione
+                Events event = manageEventService.getEventById(eventId);
                 event.getArtists().removeIf(artist -> artist.getId().equals(artistId));
+                event.setArtistsNumber(event.getArtistsNumber() - 1);
 
                 // Se l'evento non ha più artisti, eliminare l'evento
-                if (event.getArtists().isEmpty()) {
-                    eventsRepository.delete(event);
+                if (event.getArtistsNumber() < 1) {
+                    manageEventService.deleteEvent(event);
 
                     // Invia un messaggio al topic event-deleted
                     EventMessage eventDeletedMessage = new EventMessage();
@@ -128,7 +130,7 @@ public class KafkaConsumerService {
                 } else {
                     event.setUpdateTimestamp(LocalDateTime.now());
                     // Salva l'evento aggiornato
-                    eventsRepository.save(event);
+                    manageEventService.saveAndFlushEvent(event);
                 }
             }
 

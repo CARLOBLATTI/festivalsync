@@ -30,9 +30,6 @@ public class EventModel {
     @Schema(description = "Paese in cui si svolge l'evento", example = "Italy")
     private String country;
 
-    @Schema(description = "Lista degli artisti che partecipano all'evento")
-    private List<ArtistModel> artists;
-
     @Schema(description = "Stato dell'evento", example = "scheduled")
     private String state;
 

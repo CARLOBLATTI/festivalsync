@@ -35,13 +35,9 @@ public class Artists {
     @Column(name = "update_timestamp")
     private LocalDateTime updateTimestamp;
 
-    @ManyToMany
-    @JoinTable(
-            name = "artist_event",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
-    private List<Events> events = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
+    private Events event;
 
 }
 

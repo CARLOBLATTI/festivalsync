@@ -15,7 +15,7 @@ public interface EventsRepository extends JpaRepository<Events, Long> {
     List<Events> findAll();
 
     // Ottenere un evento per ID
-    Events findById(long id);
+    Events findEventsById(long id);
 
     @Query("SELECT e FROM Events e WHERE e.location = :location AND e.date = :date")
     Events findByLocationAndDate(@Param("location") String location, @Param("date") LocalDate date);

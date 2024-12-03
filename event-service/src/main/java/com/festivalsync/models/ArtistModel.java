@@ -20,9 +20,6 @@ public class ArtistModel {
     @NotBlank(message = "Il nome dell'artista è obbligatorio")
     private String name;
 
-    @Schema(description = "Lista degli eventi a cui partecipa l'artista")
-    private List<EventModel> events;
-
     @Schema(description = "Genere musicale dell'artista", example = "Rock")
     private String genre;
 
@@ -41,10 +38,4 @@ public class ArtistModel {
     @Schema(description = "Data di registrazione dell'artista", example = "2024-01-01")
     @NotNull(message = "La data di creazione è obbligatoria")
     private LocalDate creationDate;
-
-    @Schema(description = "Timestamp di inserimento dell'artista", example = "2024-01-01T10:15:30")
-    private LocalDateTime insertTimestamp;
-
-    @Schema(description = "Timestamp di aggiornamento dell'artista", example = "2024-01-02T11:00:00")
-    private LocalDateTime updateTimestamp;
 }

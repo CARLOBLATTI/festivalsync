@@ -18,13 +18,13 @@ public class Artists {
 
     private String name;
 
-    @ManyToMany
+    @ManyToOne
     @JoinTable(
             name = "artist_event",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
+            joinColumns = @JoinColumn(name = "artist_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id")
     )
-    private List<Events> events = new ArrayList<>();
+    private Events events;
 
     private String genre;
 

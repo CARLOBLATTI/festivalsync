@@ -6,6 +6,7 @@ import com.festivalsync.models.request.AddArtistRequest;
 import com.festivalsync.models.response.AddArtistResponse;
 import com.festivalsync.models.response.GetArtistEventsResponse;
 import com.festivalsync.persistence.entities.Artists;
+import com.festivalsync.persistence.entities.Events;
 import com.festivalsync.services.KafkaProducerService;
 import com.festivalsync.services.ManageArtistService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,7 +74,7 @@ public class ArtistController {
 
     @GetMapping("/all-artist")
     @Operation(summary = "Recupera un tutti gli artisti registrati")
-    public ResponseEntity<List<ArtistModel>> getArtistById(@PathVariable Long id) {
+    public ResponseEntity<List<ArtistModel>> getArtistById() {
         List<Artists> artists = manageArtistService.findAllArtists();
         List<ArtistModel> artistsModel = artists.stream().map(manageArtistService::convertArtistToModel)
                 .collect(Collectors.toList());
@@ -80,31 +82,40 @@ public class ArtistController {
     }
 
     @Operation(summary = "Ottieni tutti gli eventi associati a un artista")
-    @GetMapping("/get-artist-events/{id}")
-    public ResponseEntity<GetArtistEventsResponse> getArtistEvents(@PathVariable Long id) {
+    @GetMapping("/get-artist-events/{name}")
+    public ResponseEntity<GetArtistEventsResponse> getArtistEvents(@PathVariable String name) {
         // Recupera l'artista dal database
-        Artists artist = manageArtistService.findArtistById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Artista non trovato con ID " + id));
-        ArtistModel artistModel = manageArtistService.findArtistById(id)
+        List<Artists> artistRegistrations = manageArtistService.findArtistRegistrationsByName(name);
+        if (artistRegistrations == null || artistRegistrations.isEmpty()) {
+            throw new IllegalArgumentException("Registrazione dell'Artista con nome: " + name + "non trovate");
+        };
+        /*ArtistModel artistModel = manageArtistService.findArtistByName(name)
                 .map(manageArtistService::convertArtistToModel)
-                .orElseThrow(() -> new ResourceNotFoundException("Artista non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Artista non trovato"));*/
 
         // Mappa gli eventi associati
         GetArtistEventsResponse response = new GetArtistEventsResponse();
-        response.setArtistModel(artistModel);
-        response.setEvents(artist.getEvents().stream()
-                .map(manageArtistService::convertEventToModel)
-                .collect(Collectors.toList()));
+        //response.setArtistModel(artistModel);
+        for (Artists artistRegistration : artistRegistrations) {
+            response.getEvents().add(manageArtistService.convertEventToModel(artistRegistration.getEvents()));
+        }
 
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Elimina un artista")
+    @Operation(summary = "Elimina la partecipazione di un artista")
     @DeleteMapping("/delete-artist/{id}")
     public ResponseEntity<String> deleteArtist(@PathVariable Long id) {
         // Recupera l'artista
         Artists artist = manageArtistService.findArtistById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Artista non trovato con ID " + id));
+        List<Long> eventsId = new ArrayList<>();
+        /*List<Events> events = artist.getEvents();
+        for (Events event : events) {
+            eventsId.add(event.getId());
+        }*/
+
+        eventsId.add(artist.getEvents().getId());
 
         // Cancella l'artista dal database
         manageArtistService.deleteArtistById(id);
@@ -112,9 +123,10 @@ public class ArtistController {
         // Crea il messaggio Kafka
         ArtistEventMessage kafkaMessage = new ArtistEventMessage();
         kafkaMessage.setArtistId(artist.getId());
+        kafkaMessage.setEventsId(eventsId);
         kafkaProducerService.sendMessage(deleteArtistTopic, kafkaMessage);
 
-        String responseMessage = "Artista eliminato con successo";
+        String responseMessage = "Partecipazione dell'Artista eliminata con successo";
 
         return ResponseEntity.ok(responseMessage);
     }
