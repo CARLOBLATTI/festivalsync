@@ -24,12 +24,7 @@ public class Events {
 
     private String country;
 
-    @OneToMany
-    @JoinTable(
-            name = "artist_event",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Artists> artists = new ArrayList<>();
 
     private String state;

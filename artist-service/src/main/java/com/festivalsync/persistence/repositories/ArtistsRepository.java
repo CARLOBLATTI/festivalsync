@@ -3,6 +3,7 @@ package com.festivalsync.persistence.repositories;
 import com.festivalsync.persistence.entities.Artists;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface ArtistsRepository extends JpaRepository<Artists, Long> {
     List<Artists> findByName(String name);
 
     // Ottenere tutti gli artisti associati a un evento
-    /*@Query("SELECT a FROM Artist a JOIN a.events e WHERE e.id = :eventId")
-    List<Artists> findArtistsByEventId(long eventId);*/
+    @Query("SELECT a FROM Artists a WHERE a.event.id = :eventId")
+    List<Artists> findArtistsByEventId(@Param("eventId") Long eventId);
 }
 

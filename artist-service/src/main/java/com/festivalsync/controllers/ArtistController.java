@@ -6,13 +6,11 @@ import com.festivalsync.models.request.AddArtistRequest;
 import com.festivalsync.models.response.AddArtistResponse;
 import com.festivalsync.models.response.GetArtistEventsResponse;
 import com.festivalsync.persistence.entities.Artists;
-import com.festivalsync.persistence.entities.Events;
 import com.festivalsync.services.KafkaProducerService;
 import com.festivalsync.services.ManageArtistService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -97,7 +95,7 @@ public class ArtistController {
         GetArtistEventsResponse response = new GetArtistEventsResponse();
         //response.setArtistModel(artistModel);
         for (Artists artistRegistration : artistRegistrations) {
-            response.getEvents().add(manageArtistService.convertEventToModel(artistRegistration.getEvents()));
+            response.getEvents().add(manageArtistService.convertEventToModel(artistRegistration.getEvent()));
         }
 
         return ResponseEntity.ok(response);
@@ -115,7 +113,7 @@ public class ArtistController {
             eventsId.add(event.getId());
         }*/
 
-        eventsId.add(artist.getEvents().getId());
+        eventsId.add(artist.getEvent().getId());
 
         // Cancella l'artista dal database
         manageArtistService.deleteArtistById(id);

@@ -5,8 +5,6 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Entity
@@ -19,12 +17,8 @@ public class Artists {
     private String name;
 
     @ManyToOne
-    @JoinTable(
-            name = "artist_event",
-            joinColumns = @JoinColumn(name = "artist_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_id")
-    )
-    private Events events;
+    @JoinColumn(name = "event_id")
+    private Events event;
 
     private String genre;
 

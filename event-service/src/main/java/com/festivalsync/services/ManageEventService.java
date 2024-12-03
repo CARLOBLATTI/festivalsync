@@ -28,6 +28,11 @@ public class ManageEventService {
         return eventsRepository.saveAndFlush(event);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public Artists saveAndFlushArtists(Artists artist) {
+        return artistsRepository.saveAndFlush(artist);
+    }
+
     @Transactional(readOnly = true)
     public Optional<Events> findEventById(Long id) {
         return eventsRepository.findById(id);
@@ -100,6 +105,8 @@ public class ManageEventService {
         model.setState(event.getState());
         model.setArtistsNumber(event.getArtistsNumber());
         model.setCreationDate(event.getCreationDate());
+        model.setInsertTimestamp(event.getInsertTimestamp());
+        model.setUpdateTimestamp(event.getUpdateTimestamp());
 
         // Converti la lista di artisti in ArtistModel
         if (event.getArtists() != null) {

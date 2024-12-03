@@ -25,14 +25,6 @@ CREATE TABLE events (
     update_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Timestamp di aggiornamento
 );
 
-CREATE TABLE artist_event (
-    artist_id BIGINT NOT NULL,
-    event_id BIGINT NOT NULL,
-    PRIMARY KEY (artist_id, event_id),
-    FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
-    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
-);
-
 CREATE TABLE tickets (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     event_id BIGINT, -- Cambiato a BIGINT

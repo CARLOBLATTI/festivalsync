@@ -66,6 +66,8 @@ public class KafkaConsumerService {
                     existingEvent.setArtistsNumber(existingEvent.getArtistsNumber() + 1);
                     existingEvent.setUpdateTimestamp(LocalDateTime.now());
                     eventsRepository.save(existingEvent);
+                    artist.setEvent(existingEvent);
+                    manageEventService.saveAndFlushArtists(artist);
                     System.out.println("Artista aggiunto all'evento esistente con ID " + existingEvent.getId());
                 } else {
                     System.out.println("L'artista è già associato all'evento con ID " + existingEvent.getId());
@@ -85,7 +87,9 @@ public class KafkaConsumerService {
                 newEvent.getArtists().add(artist);
 
                 // Salva il nuovo evento
-                eventsRepository.save(newEvent);
+                newEvent = eventsRepository.save(newEvent);
+                artist.setEvent(newEvent);
+                manageEventService.saveAndFlushArtists(artist);
                 System.out.println("Creato nuovo evento con ID " + newEvent.getId() + " e associato all'artista " + artist.getName());
 
                 // Invia il messaggio al topic event-added

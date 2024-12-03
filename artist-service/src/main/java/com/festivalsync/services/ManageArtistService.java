@@ -63,6 +63,16 @@ public class ManageArtistService {
     }
 
     /**
+     * Recupera tutti gli artisti nel database associati ad un evento.
+     *
+     * @return Una lista di tutti gli artisti associati ad un evento
+     */
+    @Transactional(readOnly = true)
+    public List<Artists> findArtistsByEventId(Long eventId) {
+        return artistsRepository.findArtistsByEventId(eventId);
+    }
+
+    /**
      * Aggiorna un artista esistente.
      *
      * @param artist L'entità Artist aggiornata
@@ -90,6 +100,16 @@ public class ManageArtistService {
     }
 
     /**
+     * Elimina la registrazione di un'artista.
+     *
+     * @param artist La registrazione dell'artista da eliminare
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteArtist(Artists artist) {
+        artistsRepository.delete(artist);
+    }
+
+    /**
      * Conta il numero totale di artisti nel database.
      *
      * @return Il numero totale di artisti
@@ -105,8 +125,8 @@ public class ManageArtistService {
         model.setId(artist.getId());
         model.setName(artist.getName());
         model.setGenre(artist.getGenre());
-        if (artist.getEvents() != null) {
-            model.setEvents(convertEventToModel(artist.getEvents()));
+        if (artist.getEvent() != null) {
+            model.setEvents(convertEventToModel(artist.getEvent()));
         }
         /*if (artist.getEvents() != null) {
             model.setEvents(artist.getEvents().stream()
@@ -134,7 +154,7 @@ public class ManageArtistService {
                     .toList());
         }*/
         if (model.getEvents() != null) {
-            artist.setEvents(convertEventToEntity(model.getEvents()));
+            artist.setEvent(convertEventToEntity(model.getEvents()));
         }
         artist.setCreationDate(model.getCreationDate());
         return artist;
