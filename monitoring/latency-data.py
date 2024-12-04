@@ -36,7 +36,6 @@ def parse_data(raw_data):
     all_data = []
 
     for result in results:
-        metric = result.get("metric", {})
         values = result.get("values", [])
         for timestamp, value in values:
             try:
@@ -44,7 +43,6 @@ def parse_data(raw_data):
                 cleaned_value = float(value) if value not in ["NaN", "+Inf", "-Inf"] else None
                 all_data.append({
                     "timestamp": int(timestamp),
-                    **metric,
                     "value": cleaned_value,
                 })
             except ValueError:
@@ -57,12 +55,23 @@ def parse_data(raw_data):
     return df
 
 def clean_data(df):
-    """Rimuove righe con valori nulli o infiniti."""
+    """Rimuove righe con valori nulli, infiniti, bianchi o pari a zero."""
     if df is not None and not df.empty:
-        df_cleaned = df.dropna(subset=["value"])  # Rimuove righe con valori nulli
-        df_cleaned = df_cleaned[df_cleaned["value"].apply(lambda x: not np.isinf(x))]  # Rimuove valori infiniti
-        return df_cleaned
+        # Rimuove righe con valori nulli
+        df_cleaned = df.dropna(subset=["value"])
+
+        # Rimuove valori infiniti
+        df_cleaned = df_cleaned[df_cleaned["value"].apply(lambda x: not np.isinf(x))]
+
+        # Rimuove valori bianchi o spazi
+        df_cleaned = df_cleaned[df_cleaned["value"].apply(lambda x: str(x).strip() != "")]
+
+        # Rimuove valori pari a 0 o 0.0
+        df_cleaned = df_cleaned[df_cleaned["value"] != 0]
+
+        return df_cleaned[["timestamp", "value"]]
     return None
+
 
 def main():
     # Ottieni i dati da Prometheus
@@ -77,6 +86,13 @@ def main():
     if df_cleaned is not None and not df_cleaned.empty:
         print("Dati ottenuti e puliti con successo!")
         print(df_cleaned.head())  # Mostra le prime righe
+
+        # Formatta il timestamp nel formato richiesto
+        df_cleaned['timestamp'] = df_cleaned['timestamp'].dt.strftime('%d/%m/%y %H:%M:%S')
+
+        # Rinominare le colonne per corrispondere al file fornito
+        df_cleaned.rename(columns={'timestamp': 'Time', 'value': 'Value'}, inplace=True)
+
         # Salva i dati in un file CSV
         output_file = "prometheus_data_latency.csv"
         df_cleaned.to_csv(output_file, index=False)
