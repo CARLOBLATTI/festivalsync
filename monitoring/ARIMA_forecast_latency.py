@@ -57,7 +57,7 @@ test = trend.iloc[split_index:]
 
 # Modello ARIMA con parametri scelti manualmente (esempio: (3, 2, 5))
 # I parametri possono essere modificati in base all'analisi ACF/PACF
-model = statsmodels.api.tsa.ARIMA(train,order=(2,0,1))
+model = statsmodels.api.tsa.ARIMA(train,order=(2,0,3))
 results = model.fit()
 
 # Sommario del modello
@@ -93,7 +93,7 @@ print(f"Root Mean Squared Error: {rmse_error}")
 print(trend.describe())
 
 # Previsioni future per il periodo di osservazione
-model = statsmodels.api.tsa.ARIMA(trend,order=(2,0,1))
+model = statsmodels.api.tsa.ARIMA(trend,order=(2,0,3))
 results = model.fit()
 fcast = results.predict(len(trend),len(trend)+72,typ='levels')
 

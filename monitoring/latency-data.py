@@ -6,7 +6,7 @@ import numpy as np  # Importa NumPy per gestire valori infiniti
 PROMETHEUS_URL = "http://localhost:9090/api/v1/query_range"
 QUERY = "rate(http_server_requests_seconds_sum[5m]) / rate(http_server_requests_seconds_count[5m])"
 START_TIME = "2024-12-01T00:00:00Z"
-END_TIME = "2024-12-03T23:59:59Z"
+END_TIME = "2024-12-04T23:59:59Z"
 STEP = "60s"
 
 def fetch_prometheus_data():
