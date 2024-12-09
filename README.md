@@ -123,6 +123,9 @@ kubectl delete pod -l app=ticket-service -n festivalsync
 #### Per testare in locale serve aprire un tunnel
 minikube tunnel
 kubectl get svc -n ingress-nginx //verifica ip
+Poi si possono richiamare la API mediante l'ingress all' host
+http://unict.festivalsync.it/ seguendo i base path che possono essere
+trovati nel file ingress.yaml
 
 #### Monitoraggio
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
